@@ -5,26 +5,42 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:followme/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('สมัครบัญชีแล้วไปหน้าโปรไฟล์และเปิดฟอร์มแก้ไขได้', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('iSharing'), findsOneWidget);
+    await tester.tap(find.text('สมัครบัญชี'));
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    final signupFields = find.byType(TextField);
+    await tester.enterText(signupFields.at(0), 'my name');
+    await tester.enterText(signupFields.at(1), 'test@example.com');
+    await tester.enterText(signupFields.at(2), 'password');
+    await tester.enterText(signupFields.at(3), 'password');
+    await tester.tap(find.text('สมัครบัญชี'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('โปรไฟล์ของฉัน'), findsOneWidget);
+    expect(find.text('my name'), findsOneWidget);
+
+    await tester.tap(find.text('ตั้งชื่อเรา'));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('ตั้งชื่อใหม่'), findsOneWidget);
+    expect(find.text('บันทึก'), findsOneWidget);
+
+    await tester.tap(find.text('บันทึก'));
+    await tester.pump();
+    expect(find.text('ตั้งชื่อเรา'), findsOneWidget);
   });
 }
