@@ -88,7 +88,7 @@ class _CheckinScreenState extends State<CheckinScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final position = _position;
+    final position  = _position;
     final hasLocation = position != null;
     final mapPosition = hasLocation
         ? LatLng(position.latitude, position.longitude)
